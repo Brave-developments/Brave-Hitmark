@@ -1,7 +1,7 @@
 -- Utility Functions
 local function PlayHitSound(isHeadshot)
     if not Config.HitMarker then return end
-    
+
     if isHeadshot then
         SendNUIMessage({
             transactionType = 'playSound',
@@ -32,6 +32,8 @@ local function DrawText3D(coords, text, r, g, b, yOffset)
 end
 
 local function ScaleHealthTo100(currentHealth, maxHealth)
+    if not maxHealth or maxHealth <= 0 then return 0 end
+
     return math.floor((currentHealth / maxHealth) * 100)
 end
 
@@ -65,8 +67,10 @@ end
 local isDamageDisplayEnabled = true
 local playerNPCHitRepeatLimit = Config.NPCHitRepeatLimit 
 local playerPlayerHitRepeatLimit = Config.PlayerHitRepeatLimit  
-local lastHealth = {}
-local lastArmor = {}
+
+local function Notify(message)
+    TriggerEvent('zindro-koth:client:HudNotice', message)
+end
 
 -- Event Handlers
 AddEventHandler('gameEventTriggered', function(name, data)
@@ -82,13 +86,9 @@ AddEventHandler('gameEventTriggered', function(name, data)
         if player == PlayerPedId() or (Config.ShowNPCDamages and player == -1) then
             local currentHealth = GetEntityHealth(sourceEntity)
             local currentArmor = GetPedArmour(sourceEntity)
-            local bone = GetPedLastDamageBone(sourceEntity)
-            local isHeadshot = (bone == 31086)
-            
-            if not isHeadshot and currentHealth <= 0 then
-                isHeadshot = true
-            end
-            
+            local foundBone, bone = GetPedLastDamageBone(sourceEntity)
+            local isHeadshot = foundBone and bone == 31086
+
             PlayHitSound(isHeadshot)
             local repeatLimit = IsPedAPlayer(sourceEntity) and playerPlayerHitRepeatLimit or playerNPCHitRepeatLimit
             DisplayRemainingForFrames(sourceEntity, currentHealth, currentArmor, repeatLimit)
@@ -100,9 +100,9 @@ end)
 RegisterCommand("toggledamages", function()
     isDamageDisplayEnabled = not isDamageDisplayEnabled
     if isDamageDisplayEnabled then
-        TriggerEvent('chat:addMessage', { args = { '[System]', 'Damage display enabled.' } })
+        Notify('Damage display enabled.')
     else
-        TriggerEvent('chat:addMessage', { args = { '[System]', 'Damage display disabled.' } })
+        Notify('Damage display disabled.')
     end
 end, false)
 
@@ -110,9 +110,9 @@ RegisterCommand("setnpclimit", function(source, args)
     local newLimit = tonumber(args[1])
     if newLimit and newLimit > 0 then
         playerNPCHitRepeatLimit = newLimit
-        TriggerEvent('chat:addMessage', { args = { '[System]', 'NPC hit repeat limit set to ' .. newLimit } })
+        Notify('NPC hit repeat limit set to ' .. newLimit)
     else
-        TriggerEvent('chat:addMessage', { args = { '[System]', 'Invalid value for NPC hit repeat limit. Must be a number greater than 0.' } })
+        Notify('Invalid value for NPC hit repeat limit. Must be a number greater than 0.')
     end
 end, false)
 
@@ -120,8 +120,8 @@ RegisterCommand("setplayerlimit", function(source, args)
     local newLimit = tonumber(args[1])
     if newLimit and newLimit > 0 then
         playerPlayerHitRepeatLimit = newLimit
-        TriggerEvent('chat:addMessage', { args = { '[System]', 'Player hit repeat limit set to ' .. newLimit } })
+        Notify('Player hit repeat limit set to ' .. newLimit)
     else
-        TriggerEvent('chat:addMessage', { args = { '[System]', 'Invalid value for Player hit repeat limit. Must be a number greater than 0.' } })
+        Notify('Invalid value for Player hit repeat limit. Must be a number greater than 0.')
     end
 end, false)

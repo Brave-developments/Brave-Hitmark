@@ -19,7 +19,7 @@ A FiveM script to display hit markers and remaining health/armor, with support f
 Config = {
     HitMarker = true,  -- Enable/Disable hit marker sounds
     ShowNPCDamages = true,  -- Toggle NPC damage display
-    EnableDamageText = true,  -- Toggle damage text
+    EnableDamageText = false,  -- Toggle damage text
     NormalHitColor = {r = 255, g = 0, b = 0},  -- Health text color
     ArmorHitColor = {r = 0, g = 0, b = 255},  -- Armor text color
     NPCHitRepeatLimit = 50,  -- NPC text duration

@@ -12,12 +12,10 @@ client_scripts {
 }
 
 files {
-  'sounds/hit_marker.ogg',
+    'sounds/hit_marker.ogg',
     'sounds/headshot_55800.ogg', 
     'index.html'  
 }
 
 
 ui_page 'index.html'
-
-data_file 'AUDIO_WAVEPACK' 'sound'

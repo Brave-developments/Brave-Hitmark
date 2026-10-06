@@ -1,27 +1,40 @@
-# Damage Display and Hit Marker Script
+# Brave-Hitmark
 
-A FiveM script to display hit markers and remaining health/armor, with support for NPCs and customizable features.
+Dynamic damage display + hit marker sounds for FiveM. Purely client-side — no
+framework required.
 
 ## Features
-- **Damage Text**: Shows remaining health/armor after each hit.
-- **Hit Marker Sounds**: Plays sounds for hits and headshots.
-- **Configurable**: Customize colors, display duration, and more in the config.
-- **Support for NPCs**: Optional damage display for NPCs.
-- **Real-time Commands**: Set custom limits for damage text display during gameplay.
+
+- **Hit marker sounds** on every hit (separate headshot sound, toggle via `Config.HitMarker`)
+- **3D damage text** showing remaining health/armor next to the target
+  (`Config.EnableDamageText`), colors configured per hit type
+- Works on players and NPCs (NPC display gated by `Config.ShowNPCDamages`)
+- Players and NPCs get separate draw-repeat limits (performance-wise, so a
+  spray of hits doesn't redraw the entire duration)
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `toggledamages` | Enable/disable the damage display for you |
+| `setnpclimit <n>` | Change the NPC draw-repeat limit for your session |
+| `setplayerlimit <n>` | Change the player draw-repeat limit for your session |
+
+Commands are **client-local** (they only change what YOU see and only your own
+draw load). Config defaults live in `config.lua`.
 
 ## Installation
-1. Place the script in your `resources` folder.
-2. Add `ensure [resource_name]` to your `server.cfg`.
-3. Edit `config.lua` to customize behavior.
 
-## Configuration (config.lua)
-```lua
-Config = {
-    HitMarker = true,  -- Enable/Disable hit marker sounds
-    ShowNPCDamages = true,  -- Toggle NPC damage display
-    EnableDamageText = false,  -- Toggle damage text
-    NormalHitColor = {r = 255, g = 0, b = 0},  -- Health text color
-    ArmorHitColor = {r = 0, g = 0, b = 255},  -- Armor text color
-    NPCHitRepeatLimit = 50,  -- NPC text duration
-    PlayerHitRepeatLimit = 200,  -- Player text duration
-}
+1. Drop the resource into your `resources` folder.
+2. Add to your `server.cfg`:
+
+```cfg
+ensure Brave-Hitmark
+```
+
+The NUI page (`index.html` + `sounds/*.ogg`) ships in the repo; nothing extra
+to configure.
+
+## License
+
+All rights reserved.

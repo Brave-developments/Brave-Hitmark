@@ -2,8 +2,8 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-author 'Brave-developemnt'
-description 'Damage Indicator'
+author 'Brave-developments'
+description 'Dynamic damage display and hit marker sounds'
 version '1.0.0'
 
 client_scripts {
